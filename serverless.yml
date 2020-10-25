@@ -1,0 +1,35 @@
+service: calculator
+frameworkVersion: '2'
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  memorySize: 256
+  stage: dev
+  region: us-east-1
+
+functions:
+  add:
+    handler: add.add
+    events:
+      - http:
+          path: add
+          method: POST
+  subtract:
+    handler: subtract.subtract
+    events:
+      - http:
+          path: subtract
+          method: POST
+  multiply:
+    handler: multiply.multiply
+    events:
+      - http:
+          path: multiply
+          method: POST
+  # divide:
+  #   handler: divide.divide
+  #   events:
+  #     - http:
+  #         path: divide
+  #         method: POST
