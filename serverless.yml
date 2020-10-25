@@ -7,29 +7,54 @@ provider:
   memorySize: 256
   stage: dev
   region: us-east-1
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - sqs:SendMessage
+      Resource:
+        Fn::GetAtt: [calculator, Arn]
+    - Effect: Allow
+      Action:
+        - ses:SendEmail
+      Resource: arn:aws:ses:*
+  environment:
+    QUEUE_URL: { Ref: calculator }
 
 functions:
   add:
-    handler: add.add
+    handler: add.operation
     events:
       - http:
           path: add
           method: POST
   subtract:
-    handler: subtract.subtract
+    handler: subtract.operation
     events:
       - http:
           path: subtract
           method: POST
   multiply:
-    handler: multiply.multiply
+    handler: multiply.operation
     events:
       - http:
           path: multiply
           method: POST
   # divide:
-  #   handler: divide.divide
+  #   handler: divide.operation
   #   events:
   #     - http:
   #         path: divide
   #         method: POST
+  notification:
+    handler: notification.operation
+    events:
+      - sqs:
+          arn:
+            Fn::GetAtt: [calculator, Arn]
+
+resources:
+  Resources:
+    calculator:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: calculator
