@@ -1,4 +1,5 @@
 service: calculator
+
 frameworkVersion: '2'
 
 provider:
